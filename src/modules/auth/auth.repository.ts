@@ -8,6 +8,7 @@ export const authRepository = {
     password: string
   ): Promise<{ user: User; token:string}> {
     //http://localhost:8888/auth/api
+    console.log({ name, email, password });
     const result = await api.post("/auth/signup", { name, email, password});
     const { user, token } = result.data;
 return{ user: new User(user), token }
