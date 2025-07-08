@@ -1,6 +1,16 @@
+import { useAtomValue } from "jotai";
 import './Home.css';
 import SortableBoard from './SortableBoard';
+import { currentUserAtom } from "../../modules/auth/current-user.state";
+import { Navigate } from "react-router-dom";
+
 function Home() {
+  const currentUser = useAtomValue(currentUserAtom)
+
+  if(currentUser == null) return <Navigate to={"/signin"}/>
+
+
+
   return (
     <div>
       <header className="header">
