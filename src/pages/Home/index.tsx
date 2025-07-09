@@ -3,8 +3,11 @@ import './Home.css';
 import SortableBoard from './SortableBoard';
 import { currentUserAtom } from "../../modules/auth/current-user.state";
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import { Sidebar } from "../../pages/Home/Sidebar/index";
 
 function Home() {
+  const [showSidebar, setShowSidebar] = useState(false);
   const currentUser = useAtomValue(currentUserAtom)
 
   if(currentUser == null) return <Navigate to={"/signin"}/>
@@ -15,7 +18,7 @@ function Home() {
     <div>
       <header className="header">
         <div className="header-left">
-          <button className="apps-button">
+          <button className="apps-button" onClick={() => setShowSidebar(true)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z" />
             </svg>
@@ -32,7 +35,8 @@ function Home() {
         <h1 className="board-title">マイボード</h1>
       </div>
       <SortableBoard />
-      {/* <Sidebar /> */}
+      {showSidebar && <Sidebar />}
+      
       {/* <CardModal /> */}
     </div>
   );
