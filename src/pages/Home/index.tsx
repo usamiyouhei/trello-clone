@@ -35,7 +35,7 @@ function Home() {
         <h1 className="board-title">マイボード</h1>
       </div>
       <SortableBoard />
-      {showSidebar && <Sidebar />}
+      {showSidebar && <Sidebar onClose={() => setShowSidebar(false)}/>}
       
       {/* <CardModal /> */}
     </div>
