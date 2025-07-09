@@ -1,10 +1,16 @@
-export const Sidebar = () => {
+
+
+interface SidebarProps {
+  onClose: () => void;
+}
+
+export const Sidebar = ({ onClose }: SidebarProps) => {
   return (
     <>
-      <div className="sidebar-overlay" />
+      <div className="sidebar-overlay" onClick={onClose}/>
       <div className="sidebar">
         <div className="sidebar-header">
-          <button className="sidebar-close-button">×</button>
+          <button className="sidebar-close-button" onClick={onClose}>×</button>
 
           <div className="sidebar-user-info">
             <div className="sidebar-user-name" title="プロフィールを編集">
