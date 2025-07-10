@@ -24,6 +24,11 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
       console.error('プロフィールの更新に失敗しました。', error);
       
     }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setCurrentUser(undefined)
   }
   return (
     <>
@@ -71,8 +76,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
 
         <div className="sidebar-content">
           <div className="sidebar-section">
-            <button className="sidebar-board-item">
-              <span className="sidebar-board-name">ログアウト</span>
+            <button className="sidebar-board-item" onClick={logout}>
+              <span className="sidebar-board-name" >ログアウト</span>
             </button>
           </div>
         </div>
