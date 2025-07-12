@@ -46,7 +46,16 @@ export default function SortableBoard() {
       ...list,
       position: index,
     }));
+
+    const originalLists = [...lists]
     setLists(updatedLists)
+    try {
+      await listRepository.update(updatedLists);
+    } catch (error) {
+      console.error('リストの移動に失敗しました', error);
+      setLists(originalLists)
+      
+    }
   }
 
   return (
