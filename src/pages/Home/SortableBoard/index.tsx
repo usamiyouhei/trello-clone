@@ -4,6 +4,12 @@ import { useAtom, useAtomValue } from "jotai";
 import { currentUserAtom } from "../../../modules/auth/current-user.state";
 import { listRepository } from "../../../modules/lists/list.repository";
 import { listsAtom } from "../../../modules/lists/list.state";
+import {
+  DragDropContext,
+  Droppable,
+  type DraggableLocation,
+  type DropResult,
+} from '@hello-pangea/dnd';
 
 export default function SortableBoard() {
   const currentUser = useAtomValue(currentUserAtom);
@@ -14,17 +20,53 @@ export default function SortableBoard() {
     const newList = await listRepository.create(currentUser!.boardId, title);
     setLists((prevLists) => [...prevLists, newList]);
     setLists([...lists, newList])
-    
+  }
+
+  const deleteList = async (listId: string) => {
+    const confirmMessage =
+    'リストを削除しますか？このリスト内のカードも全て削除されます';
+    try {
+      if(window.confirm(confirmMessage)){
+        await listRepository.delete(listId);
+        setLists((prevLists) => prevLists.filter((l) => l.id != listId))
+      }
+    } catch (error) {
+      console.error("リストの削除に失敗しました。", error);
+    }
+  }
+
+  const handleDragEnd = async (result: DropResult) => {
+    const { destination, source } = result;
+    if(destination == null) return;
+
+    const [reorderedList] = sortedLists.splice(source.index, 1);
+    sortedLists.splice(destination.index, 0, reorderedList);
+
+    const updatedLists = sortedLists.map((list,index) => ({
+      ...list,
+      position: index,
+    }));
+    setLists(updatedLists)
   }
 
   return (
+    <DragDropContext onDragEnd={handleDragEnd}>
     <div className="board-container">
-      <div style={{ display: 'flex', gap: '12px' }}>
-        {sortedLists.map((list) => (
-          <SortableList list={list}/>
+      <Droppable droppableId="board" type="list" direction="horizontal">
+        {(provided) => (
+        <div style={{ display: 'flex', gap: '12px' }}
+        {...provided.droppableProps}
+        ref={provided.innerRef}
+        >
+          {sortedLists.map((list) => (
+            <SortableList key={list.id} list={list} onDelete={deleteList}/>
         ))}
+        {provided.placeholder}
       </div>
+      )}
+      </Droppable>
       <AddList onCreate={createList}/>
     </div>
+    </DragDropContext>
   );
 }
