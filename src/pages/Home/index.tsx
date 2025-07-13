@@ -7,14 +7,23 @@ import { useState, useEffect } from "react";
 import { Sidebar } from "../../pages/Home/Sidebar/index";
 import { listRepository } from "../../modules/lists/list.repository";
 import { listsAtom } from "../../modules/lists/list.state";
+import { cardRepository } from "../../modules/cards/card.repository";
+import { cardsAtom } from "../../modules/cards/card.state";
 
 function Home() {
   const [showSidebar, setShowSidebar] = useState(false);
   const currentUser = useAtomValue(currentUserAtom);
   const setLists = useSetAtom(listsAtom);
+  const setCards = useSetAtom(cardsAtom)
 
   useEffect(() => {
-    fetchLists();
+    try {
+      fetchLists();
+      fetchCards();
+    } catch (error) {
+      console.error('リストとカードの取得処理に失敗しました', error);
+      
+    }
   }, [currentUser])
   
 
@@ -23,6 +32,10 @@ function Home() {
     const lists = await listRepository.find(currentUser!.boardId)
    setLists(lists)
   };
+
+  const fetchCards = async () => {
+    const cards = await cardRepository.find(currentUser!.boardId)
+  }
 
   if(currentUser == null) return <Navigate to={"/signin"}/>
 
