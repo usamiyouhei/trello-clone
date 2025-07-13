@@ -1,4 +1,11 @@
-export function SortableCard() {
+import { Card } from "../../../modules/cards/card.entity";
+
+interface SortableCardProps {
+  card: Card;
+}
+
+
+export function SortableCard({ card }: SortableCardProps) {
   return (
     <div>
       <div className={`card`}>
@@ -8,7 +15,7 @@ export function SortableCard() {
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
             </svg>
           </span>
-          テストカード
+          {card.title}
         </div>
         <div className="card-badge">🕒 2025-06-08</div>
       </div>

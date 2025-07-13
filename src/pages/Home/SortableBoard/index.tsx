@@ -61,7 +61,6 @@ export default function SortableBoard() {
     } catch (error) {
       console.error('リストの移動に失敗しました', error);
       setLists(originalLists)
-      
     }
   }
 
