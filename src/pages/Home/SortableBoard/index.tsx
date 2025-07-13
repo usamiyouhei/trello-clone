@@ -10,11 +10,18 @@ import {
   type DraggableLocation,
   type DropResult,
 } from '@hello-pangea/dnd';
+import { cardRepository } from "../../../modules/cards/card.repository";
 
 export default function SortableBoard() {
   const currentUser = useAtomValue(currentUserAtom);
   const [lists, setLists] = useAtom(listsAtom);
   const sortedLists = [...lists].sort((a, b) => a.position - b.position)
+
+  const createCard = async (listId: string, title: string) => {
+    const newCard = await cardRepository.create(listId, title);
+    console.log(newCard);
+    
+  }
 
   const createList = async (title: string) => {
     const newList = await listRepository.create(currentUser!.boardId, title);
@@ -68,7 +75,12 @@ export default function SortableBoard() {
         ref={provided.innerRef}
         >
           {sortedLists.map((list) => (
-            <SortableList key={list.id} list={list} onDelete={deleteList}/>
+            <SortableList 
+              key={list.id} 
+              list={list} 
+              onDelete={deleteList}
+              onCreateCard={createCard}
+            />
         ))}
         {provided.placeholder}
       </div>

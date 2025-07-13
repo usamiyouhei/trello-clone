@@ -20,6 +20,7 @@ function Signin() {
     setCurrentUser(user)
     console.log(user, token);
     } catch (error) {
+      // console.log(email, password);
       console.error('ログインに失敗しました。', error);
       
     }
