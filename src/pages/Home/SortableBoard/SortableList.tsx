@@ -5,9 +5,14 @@ import { Draggable } from '@hello-pangea/dnd';
 interface SortableListProps {
   list: List;
   onDelete: (id: string) => void;
+  onCreateCard: (listId: string, title: string) => Promise<void>;
 }
 
-export function SortableList({ list, onDelete }: SortableListProps) {
+export function SortableList({
+   list, 
+   onDelete, 
+   onCreateCard 
+  }: SortableListProps) {
 
 
   return (
@@ -43,7 +48,7 @@ export function SortableList({ list, onDelete }: SortableListProps) {
         >
           <SortableCard />
         </div>
-        <AddCard />
+        <AddCard listId={list.id} onCreate={onCreateCard}/>
       </div>
     </div>
       )}
