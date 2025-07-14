@@ -9,5 +9,9 @@ export const cardRepository = {
   async create(listId: string, title: string) {
     const result = await api.post('/cards', { listId, title });
     return new Card(result.data)
+  },
+  async delete(id: string): Promise<boolean>{
+    await api.delete(`/cards/${id}`);
+    return true;
   }
 }
