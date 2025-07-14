@@ -1,4 +1,7 @@
 import { Card } from "../../../modules/cards/card.entity";
+import { useSetAtom } from "jotai";
+import { selectedCardIdAtom } from "../../../modules/cards/card.state";
+
 
 interface SortableCardProps {
   card: Card;
@@ -6,9 +9,11 @@ interface SortableCardProps {
 
 
 export function SortableCard({ card }: SortableCardProps) {
+  const setSelectedCardId = useSetAtom(selectedCardIdAtom);
+
   return (
     <div>
-      <div className={`card`}>
+      <div className={`card`} onClick={() => setSelectedCardId(card.id)}>
         <div className="card-title">
           <span className="card-check">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="#4CAF50">

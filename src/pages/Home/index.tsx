@@ -8,13 +8,15 @@ import { Sidebar } from "../../pages/Home/Sidebar/index";
 import { listRepository } from "../../modules/lists/list.repository";
 import { listsAtom } from "../../modules/lists/list.state";
 import { cardRepository } from "../../modules/cards/card.repository";
-import { cardsAtom } from "../../modules/cards/card.state";
+import { cardsAtom, selectedCardAtom } from "../../modules/cards/card.state";
+import { CardModal } from "./CardModal";
 
 function Home() {
   const [showSidebar, setShowSidebar] = useState(false);
   const currentUser = useAtomValue(currentUserAtom);
   const setLists = useSetAtom(listsAtom);
   const setCards = useSetAtom(cardsAtom)
+  const selectedCard = useAtomValue(selectedCardAtom)
 
   useEffect(() => {
     try {
@@ -34,7 +36,8 @@ function Home() {
   };
 
   const fetchCards = async () => {
-    const cards = await cardRepository.find(currentUser!.boardId)
+    const cards = await cardRepository.find(currentUser!.boardId);
+    setCards(cards);
   }
 
   if(currentUser == null) return <Navigate to={"/signin"}/>
@@ -63,8 +66,7 @@ function Home() {
       </div>
       <SortableBoard />
       {showSidebar && <Sidebar onClose={() => setShowSidebar(false)}/>}
-      
-      {/* <CardModal /> */}
+      {selectedCard != null && <CardModal />}
     </div>
   );
 }
