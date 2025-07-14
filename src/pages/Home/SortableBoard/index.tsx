@@ -4,6 +4,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { currentUserAtom } from "../../../modules/auth/current-user.state";
 import { listRepository } from "../../../modules/lists/list.repository";
 import { listsAtom } from "../../../modules/lists/list.state";
+import { cardsAtom } from "../../../modules/cards/card.state";
 import {
   DragDropContext,
   Droppable,
@@ -15,10 +16,12 @@ import { cardRepository } from "../../../modules/cards/card.repository";
 export default function SortableBoard() {
   const currentUser = useAtomValue(currentUserAtom);
   const [lists, setLists] = useAtom(listsAtom);
+  const [cards, setCards] = useAtom(cardsAtom);
   const sortedLists = [...lists].sort((a, b) => a.position - b.position)
 
   const createCard = async (listId: string, title: string) => {
     const newCard = await cardRepository.create(listId, title);
+    setCards((prevCards) => [...prevCards, newCard])
     console.log(newCard);
     
   }
