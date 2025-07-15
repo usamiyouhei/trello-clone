@@ -1,11 +1,17 @@
-import { useAtom, useSetAtom } from "jotai";
-import { cardsAtom,selectedCardIdAtom } from "../../../modules/cards/card.state";
+import { useAtom, useAtomValue, useSetAtom,  } from "jotai";
+import { cardsAtom, selectedCardIdAtom, selectedCardAtom } from "../../../modules/cards/card.state";
 import { cardRepository } from "../../../modules/cards/card.repository";
 import { Card } from "../../../modules/cards/card.entity";
+import { useState } from "react";
 
 export const CardModal = () => {
   const [selectedCardId, setSelectedCardId] = useAtom(selectedCardIdAtom);
   const setCards = useSetAtom(cardsAtom);
+  const selectedCard = useAtomValue(selectedCardAtom)
+  const [title, setTitle] = useState(selectedCard?.title || '')
+  const [description, setDescription] = useState(selectedCard?.description || '')
+  const [dueDate, setDueDate] = useState(selectedCard?.dueDate || '')
+  const [completed, setCompleted] = useState(selectedCard?.completed || false)
   
   const deleteCard = async () => {
 
@@ -59,11 +65,18 @@ export const CardModal = () => {
         <div className="card-modal-content">
           <div className="card-modal-main">
             <div className="card-modal-title-section">
-              <input type="checkbox" className="card-modal-title-checkbox" />
+              <input 
+                type="checkbox" 
+                className="card-modal-title-checkbox" 
+                checked={completed}
+                onChange={(e) => setCompleted(e.target.checked)}
+              />
               <textarea
                 placeholder="タイトルを入力"
                 className="card-modal-title"
                 maxLength={50}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="card-modal-section">
@@ -73,7 +86,12 @@ export const CardModal = () => {
                   期限
                 </h3>
               </div>
-              <input type="date" className="card-modal-due-date" />
+              <input 
+                type="date" 
+                className="card-modal-due-date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
             </div>
 
             <div className="card-modal-section">
@@ -87,6 +105,8 @@ export const CardModal = () => {
                 placeholder="説明を入力"
                 className="card-modal-description"
                 maxLength={200}
+                 value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
           </div>
