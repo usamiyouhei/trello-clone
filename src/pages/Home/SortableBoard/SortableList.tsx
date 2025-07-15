@@ -1,7 +1,7 @@
 import { SortableCard } from './SortableCard';
 import { AddCard } from './AddCard';
 import { List } from "../../../modules/lists/list.entity";
-import { Draggable } from '@hello-pangea/dnd';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useAtomValue } from "jotai";
 import { cardsAtom } from "../../../modules/cards/card.state";
 interface SortableListProps {
@@ -47,15 +47,23 @@ export function SortableList({
             </svg>
           </button>
         </div>
-        <div
-          style={{
-            minHeight: '1px',
-          }}
-        >
-          {sortedListCards.map((card) => (
-            <SortableCard key={card.id} card={card}/>
-          ))}
-        </div>
+        <Droppable droppableId={list.id} type="card">
+          {(provided) => (
+            <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+              style={{
+                minHeight: '1px',
+              }}
+            >
+              {sortedListCards.map((card) => (
+                <SortableCard key={card.id} card={card}/>
+              ))}
+              {provided.placeholder}
+            </div>
+            )}
+        </Droppable>
+
         <AddCard listId={list.id} onCreate={onCreateCard}/>
       </div>
     </div>
