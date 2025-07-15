@@ -13,6 +13,24 @@ export const CardModal = () => {
   const [dueDate, setDueDate] = useState(selectedCard?.dueDate || '')
   const [completed, setCompleted] = useState(selectedCard?.completed || false)
   
+
+  const updateCard = async() => {
+    const card = {
+      ...selectedCard!,
+      title,
+      description,
+      dueDate,
+      completed
+    }
+    const updatedCard = await cardRepository.update([card]);
+    setCards((prevCards) => 
+      prevCards.map((card) => 
+        card.id == updatedCard[0].id ? updatedCard[0] : card
+      )
+    );
+  }
+
+
   const deleteCard = async () => {
 
     const confirmMessage = "カードを削除しますか？この操作は取り消せません";
