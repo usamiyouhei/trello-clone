@@ -11,6 +11,9 @@ export class Card {
 
 
   constructor(data: Card) {
-    Object.assign(this, data)
+    Object.assign(this, data);
+    if(data.dueDate != null) {
+      this.dueDate = new Date(data.dueDate).toLocaleDateString('sv-SE')
+    }
   }
 }

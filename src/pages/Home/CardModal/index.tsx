@@ -12,22 +12,28 @@ export const CardModal = () => {
   const [description, setDescription] = useState(selectedCard?.description || '')
   const [dueDate, setDueDate] = useState(selectedCard?.dueDate || '')
   const [completed, setCompleted] = useState(selectedCard?.completed || false)
-  
 
+    console.log(selectedCard);
   const updateCard = async() => {
-    const card = {
-      ...selectedCard!,
-      title,
-      description,
-      dueDate,
-      completed
+    try {
+      const card = {
+        ...selectedCard!,
+        title,
+        description,
+        dueDate,
+        completed
+      }
+      const updatedCard = await cardRepository.update([card]);
+      setCards((prevCards) => 
+        prevCards.map((card) => 
+          card.id == updatedCard[0].id ? updatedCard[0] : card
+        )
+      );
+      setSelectedCardId(null);
+    } catch (error) {
+      console.error('カードの更新に失敗しました', error);
+      
     }
-    const updatedCard = await cardRepository.update([card]);
-    setCards((prevCards) => 
-      prevCards.map((card) => 
-        card.id == updatedCard[0].id ? updatedCard[0] : card
-      )
-    );
   }
 
 
@@ -52,7 +58,11 @@ export const CardModal = () => {
       <div className="card-modal" onClick={(e) => e.stopPropagation()}>
         <div className="card-modal-header">
           <div className="card-modal-list-info">
-            <button className="card-modal-save-button" title="変更を保存">
+            <button 
+              className="card-modal-save-button" 
+              title="変更を保存"
+              onClick={updateCard}
+              >
               <svg
                 viewBox="0 0 24 24"
                 width="16"
