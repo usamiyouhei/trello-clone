@@ -47,7 +47,7 @@ export default function SortableBoard() {
   }
 
   const handleDragEnd = async (result: DropResult) => {
-    const { destination, source, type } = result;
+    const { destination, source, type, draggableId } = result;
 
     if(destination == null) return;
 
@@ -57,8 +57,43 @@ export default function SortableBoard() {
     }
 
     if (type == 'card') {
-      moveCardInSameList(source, destination)
+      await handleCardMove(draggableId, source, destination);
     }
+  }
+
+  const handleCardMove = async(
+    cardId: string, 
+    source:DraggableLocation, 
+    destination: DraggableLocation
+  ) => {
+    const targetCard = cards.find((card) => card.id == cardId);
+    if (targetCard == null) return cards;
+
+    const updatedCards = 
+    source.droppableId == destination.droppableId 
+    ? moveCardInSameList(source, destination) 
+    : moveCardBetweenLists(source, destination, targetCard);
+    setCards(updatedCards)
+  };
+
+  const moveCardBetweenLists = (
+    source: DraggableLocation,
+    destination: DraggableLocation,
+    card: Card
+  ) => {
+    const sourceListCards = cards
+    .filter((c) => c.listId == source.droppableId && c.id !== card.id)
+    .sort((a, b) => a.position - b.position);
+    const updatedCards = updateCardsPosition(cards, sourceListCards);
+
+    const destinationListCards = updatedCards
+    .filter((c) => c.listId == destination.droppableId)
+    .sort((a, b) => a.position - b.position);
+    destinationListCards.splice(destination.index, 0, { 
+      ...card,
+      listId: destination.droppableId,
+    });
+    return updateCardsPosition(updatedCards, destinationListCards)
   }
 
   const moveCardInSameList = (
@@ -71,8 +106,7 @@ export default function SortableBoard() {
     const [removed] = listCards.splice(source.index, 1);
     listCards.splice(destination.index, 0, removed);
 
-    const updatedCards = updateCardsPosition(cards, listCards)
-    setCards(updatedCards)
+    return updateCardsPosition(cards, listCards);
   };
 
   const updateCardsPosition = (cards: Card[], updatedCards: Card[]) => {
