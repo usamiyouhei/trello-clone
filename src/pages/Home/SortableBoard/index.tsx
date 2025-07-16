@@ -68,12 +68,20 @@ export default function SortableBoard() {
   ) => {
     const targetCard = cards.find((card) => card.id == cardId);
     if (targetCard == null) return cards;
+    const originalCards = [...cards];
+    try {
+      const updatedCards = 
+      source.droppableId == destination.droppableId 
+      ? moveCardInSameList(source, destination) 
+      : moveCardBetweenLists(source, destination, targetCard);
+      setCards(updatedCards);
+      await cardRepository.update(updatedCards);
+    } catch (error) {
+      console.error('カードの移動でエラーが発生しました', error);
+      setCards(originalCards)
+    }
 
-    const updatedCards = 
-    source.droppableId == destination.droppableId 
-    ? moveCardInSameList(source, destination) 
-    : moveCardBetweenLists(source, destination, targetCard);
-    setCards(updatedCards)
+
   };
 
   const moveCardBetweenLists = (
