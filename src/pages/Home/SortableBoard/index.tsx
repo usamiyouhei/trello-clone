@@ -46,9 +46,35 @@ export default function SortableBoard() {
   }
 
   const handleDragEnd = async (result: DropResult) => {
-    const { destination, source } = result;
+    const { destination, source, type } = result;
+
     if(destination == null) return;
 
+    if (type == 'list') {
+      await handleListMove(source, destination);
+      return;
+    }
+
+    if (type == 'card') {
+      moveCardInSameList(source, destination)
+    }
+  }
+
+  const moveCardInSameList = (
+    source: DraggableLocation, 
+    destination: DraggableLocation
+  ) => {
+    const listCards = cards
+    .filter((card) => card.listId == source.droppableId)
+    .sort((a, b) => a.position - b.position);
+    const [removed] = listCards.splice(source.index, 1);
+    listCards.splice(destination.index, 0, removed)
+  }
+
+  const handleListMove = async (
+    source: DraggableLocation, 
+    destination: DraggableLocation
+  ) => {
     const [reorderedList] = sortedLists.splice(source.index, 1);
     sortedLists.splice(destination.index, 0, reorderedList);
 
