@@ -12,6 +12,7 @@ import {
   type DropResult,
 } from '@hello-pangea/dnd';
 import { cardRepository } from "../../../modules/cards/card.repository";
+import { Card } from '../../../modules/cards/card.entity';
 
 export default function SortableBoard() {
   const currentUser = useAtomValue(currentUserAtom);
@@ -68,7 +69,21 @@ export default function SortableBoard() {
     .filter((card) => card.listId == source.droppableId)
     .sort((a, b) => a.position - b.position);
     const [removed] = listCards.splice(source.index, 1);
-    listCards.splice(destination.index, 0, removed)
+    listCards.splice(destination.index, 0, removed);
+
+    const updatedCards = updateCardsPosition(cards, listCards)
+    setCards(updatedCards)
+  };
+
+  const updateCardsPosition = (cards: Card[], updatedCards: Card[]) => {
+    return cards.map((card) => {
+      const cardIndex = updatedCards.findIndex((c) => c.id == card.id);
+      return cardIndex != -1 ? {
+        ...updatedCards[cardIndex],
+        position: cardIndex
+      }
+      : card;
+    })
   }
 
   const handleListMove = async (
